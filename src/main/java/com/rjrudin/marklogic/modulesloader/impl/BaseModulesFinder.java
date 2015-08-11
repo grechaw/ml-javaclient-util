@@ -21,7 +21,6 @@ public abstract class BaseModulesFinder implements ModulesFinder {
     private FilenameFilter namespaceFilenameFilter = new NamespaceFilenameFilter();
 
     private String servicesPath = "services";
-    private String assetsPath = "ext";
     private String optionsPath = "options";
     private String namespacesPath = "namespaces";
     private String transformsPath = "transforms";
@@ -53,10 +52,16 @@ public abstract class BaseModulesFinder implements ModulesFinder {
     }
 
     protected void addAssets(Modules modules, File baseDir) {
-        File assetsBaseDir = new File(baseDir, assetsPath);
-        List<Asset> assets = new ArrayList<>();
-        addAssetFiles(assetsBaseDir, "", assets);
-        modules.setAssets(assets);
+        List<File> dirs = new ArrayList<>();
+        File dir = new File(baseDir, "ext");
+        if (dir.exists()) {
+            dirs.add(dir);
+        }
+        dir = new File(baseDir, "root");
+        if (dir.exists()) {
+            dirs.add(dir);
+        }
+        modules.setAssetDirectories(dirs);
     }
 
     protected void addAssetFiles(File dir, String pathRelativeToAssetsDir, List<Asset> assets) {
@@ -134,10 +139,6 @@ public abstract class BaseModulesFinder implements ModulesFinder {
 
     public void setServicesPath(String servicesPath) {
         this.servicesPath = servicesPath;
-    }
-
-    public void setAssetsPath(String assetsPath) {
-        this.assetsPath = assetsPath;
     }
 
     public void setOptionsPath(String optionsPath) {
